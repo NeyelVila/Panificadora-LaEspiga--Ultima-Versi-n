@@ -1,0 +1,18 @@
+[
+  {
+    "id": "ins_1",
+    "nombre": "Harina 0000",
+    "unidad": "kg",
+    "stockActual": 92,
+    "stockMinimo": 20,
+    "activo": true
+  },
+  {
+    "id": "ins_2",
+    "nombre": "Manteca",
+    "unidad": "kg",
+    "stockActual": 48,
+    "stockMinimo": 10,
+    "activo": true
+  }
+]

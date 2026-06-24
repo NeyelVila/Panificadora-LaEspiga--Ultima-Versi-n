@@ -1,0 +1,24 @@
+[
+  {
+    "id": "ped_fb04b6a7",
+    "clienteId": 1,
+    "nombreCliente": "Juan",
+    "productos": [
+      {
+        "productoId": "prod_1",
+        "nombre": "Pan de Masa Madre",
+        "cantidad": 10,
+        "precioUnitario": 1500
+      },
+      {
+        "productoId": "prod_2",
+        "nombre": "Medialunas de Manteca (Docena)",
+        "cantidad": 10,
+        "precioUnitario": 2500
+      }
+    ],
+    "total": 40000,
+    "estado": "En Producción",
+    "fechaCreacion": "2026-05-15T01:27:21.583Z"
+  }
+]

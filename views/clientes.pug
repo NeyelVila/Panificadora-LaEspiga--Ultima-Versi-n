@@ -1,0 +1,19 @@
+//- doctype html
+//- html
+//-   head
+//-     title Clientes
+//-     link(rel="stylesheet" href="/styles/styles.css")
+//-   body
+//-     h1 Lista de clientes
+
+//-     ul
+//-       each cliente in clientes
+//-         li
+//-           span #{cliente.nombre} - #{cliente.email} - #{cliente.telefono} - #{cliente.direccion} - #{cliente.tipo}
+
+//-           div
+//-             a.btn(href=`/clientes/${cliente.id}/editar`) Editar
+//-             form(action=`/clientes/${cliente.id}/eliminar` method="POST" style="display:inline")
+//-               button.btn.eliminar(type="submit") X
+
+//-     a.btn.secundario(href="/") Volver

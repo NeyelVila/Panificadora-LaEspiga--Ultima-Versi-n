@@ -1,0 +1,38 @@
+//- doctype html
+//- html
+//-   head
+//-     title Menú
+//-     link(rel="stylesheet" href="/styles/styles.css")
+//-   body
+//-     .container
+//-       h1 Panificadora - La Espiga de Oro
+
+//-       a.btn(href="/clientes") Ver clientes
+//-       a.btn(href="/clientes/nuevo") Crear cliente
+extends layout
+
+block content
+  h1.mb-4 Bienvenido al Panel de Control
+  p.text-muted Gestión operativa de La Espiga de Oro
+
+  .row.mt-4
+    .col-md-4
+      .card.text-bg-primary.mb-3
+        .card-body
+          h5.card-title Clientes Activos
+          //- Inyectamos la variable aquí
+          p.card-text.display-4 #{clientesActivos}
+          
+    .col-md-4
+      .card.text-bg-success.mb-3
+        .card-body
+          h5.card-title Pedidos Totales
+          //- Inyectamos la variable aquí
+          p.card-text.display-4 #{pedidosMes}
+          
+    .col-md-4
+      .card.text-bg-warning.mb-3
+        .card-body
+          h5.card-title Alertas de Stock
+          //- Inyectamos la variable aquí
+          p.card-text.display-4 #{alertasStock}

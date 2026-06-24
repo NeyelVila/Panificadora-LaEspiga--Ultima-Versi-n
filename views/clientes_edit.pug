@@ -1,0 +1,23 @@
+//- doctype html
+//- html
+//-   head
+//-     title Editar cliente
+//-     link(rel="stylesheet" href="/styles/styles.css")
+//-   body
+//-     h1 Editar cliente
+
+//-     form(action=`/clientes/${cliente.id}/editar` method="POST")
+//-       div
+//-         input(type="text" name="nombre" value=cliente.nombre required)
+//-       div
+//-         input(type="email" name="email" value=cliente.email required)
+//-       div
+//-         input(type="text" name="tipo" value=cliente.tipo required)
+//-       div
+//-         input(type="text" name="direccion" value=cliente.direccion required)
+//-       div
+//-         input(type="text" name="telefono" value=cliente.telefono required)
+
+//-       button.btn(type="submit") Guardar cambios
+
+//-     a.btn.secundario(href="/clientes") Volver

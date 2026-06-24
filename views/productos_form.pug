@@ -1,0 +1,60 @@
+extends layout
+
+block content
+  .d-flex.justify-content-between.align-items-center.mb-4
+    h1 Nuevo Producto y Receta
+    a.btn.btn-outline-secondary(href="/productos/view") Volver
+
+  form(action="/productos/crear-web" method="POST")
+    .row
+      //- Columna Izquierda: Datos del Producto
+      .col-md-5
+        .card.shadow-sm.mb-4
+          .card-header.bg-dark.text-white Datos del Producto
+          .card-body
+            .mb-3
+              label.form-label Nombre
+              input.form-control(type="text" name="nombre" required placeholder="Ej: Pan de Campo")
+            .mb-3
+              label.form-label Categoría
+              input.form-control(type="text" name="categoria" required placeholder="Ej: Panificados")
+            .mb-3
+              label.form-label Precio de Venta ($)
+              input.form-control(type="number" name="precio" required)
+
+      //- Columna Derecha: Ingredientes de la Receta
+      .col-md-7
+        .card.shadow-sm
+          .card-header.bg-secondary.text-white Ingredientes de la Receta
+          .card-body
+            #contenedor-ingredientes
+              .row.mb-2.ingrediente-row
+                .col-md-8
+                  label.form-label Insumo
+                  select.form-select(name="insumos[]" required)
+                    option(value="") Seleccionar insumo...
+                    each insumo in insumos
+                      option(value=insumo._id) #{insumo.nombre} (#{insumo.unidad})
+                .col-md-4
+                  label.form-label Cantidad
+                  input.form-control(type="number" step="0.01" name="cantidades[]" required)
+            
+            button.btn.btn-sm.btn-outline-primary.mt-3(type="button" onclick="agregarFila()") 
+              i.bi.bi-plus-circle.me-1
+              | Añadir otro ingrediente
+
+    .mt-4
+      button.btn.btn-primary.btn-lg.w-100(type="submit") Guardar Producto y Receta
+
+  script.
+    function agregarFila() {
+      const contenedor = document.getElementById('contenedor-ingredientes');
+      const filaOriginal = document.querySelector('.ingrediente-row');
+      const nuevaFila = filaOriginal.cloneNode(true);
+      
+      // Limpiamos los valores de la nueva fila
+      nuevaFila.querySelectorAll('input').forEach(i => i.value = '');
+      nuevaFila.querySelectorAll('select').forEach(s => s.selectedIndex = 0);
+      
+      contenedor.appendChild(nuevaFila);
+    }

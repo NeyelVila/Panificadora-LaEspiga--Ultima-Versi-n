@@ -1,0 +1,26 @@
+[
+  {
+    "id": "rec_1",
+    "productoId": "prod_1",
+    "ingredientes": [
+      {
+        "insumoId": "ins_1",
+        "cantidad": 0.5
+      }
+    ]
+  },
+  {
+    "id": "rec_2",
+    "productoId": "prod_2",
+    "ingredientes": [
+      {
+        "insumoId": "ins_1",
+        "cantidad": 0.3
+      },
+      {
+        "insumoId": "ins_2",
+        "cantidad": 0.2
+      }
+    ]
+  }
+]

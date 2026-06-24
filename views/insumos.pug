@@ -1,0 +1,40 @@
+extends layout
+
+block content
+  .d-flex.justify-content-between.align-items-center.mb-4
+    h1 Control de Stock
+    a.btn.btn-primary(href="/insumos/nuevo") 
+      i.bi.bi-plus-lg.me-1
+      | Nuevo Insumo
+
+  .card.shadow-sm
+    .card-body
+      table.table.table-hover.align-middle
+        thead.table-dark
+          tr
+            th Materia Prima
+            th Estado
+            th Cantidad Disponible
+            th Stock Mínimo
+            th Unidad
+            th Acciones
+        tbody
+          each insumo in insumos
+            tr
+              td.fw-bold= insumo.nombre
+              td
+                if insumo.stockActual <= insumo.stockMinimo
+                  span.badge.bg-danger Stock Crítico
+                else if insumo.stockActual <= (insumo.stockMinimo * 1.5)
+                  span.badge.bg-warning.text-dark Reposición Próxima
+                else
+                  span.badge.bg-success Óptimo
+              td
+                span.fs-5(class=(insumo.stockActual <= insumo.stockMinimo) ? 'text-danger fw-bold' : '') #{insumo.stockActual}
+              td.text-muted #{insumo.stockMinimo}
+              td= insumo.unidad
+              td
+                //- Botón para registrar la llegada de nueva mercadería
+                a.btn.btn-sm.btn-outline-success(href=`/insumos/${insumo._id}/ingreso` title="Ingresar Mercadería")
+                  i.bi.bi-box-arrow-in-down.me-1
+                  | Ingresar Stock

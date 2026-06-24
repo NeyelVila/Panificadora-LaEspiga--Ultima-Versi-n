@@ -1,0 +1,40 @@
+extends layout
+
+block content
+  .d-flex.justify-content-between.align-items-center.mb-4
+    h1 Cargar Receta para: #{producto.nombre}
+    a.btn.btn-outline-secondary(href=`/productos/${producto._id}/receta`) Cancelar
+
+  .card.shadow-sm
+    .card-header.bg-secondary.text-white Ingredientes
+    .card-body
+      form(action=`/productos/${producto._id}/crear-receta` method="POST")
+        #contenedor-ingredientes
+          .row.mb-2.ingrediente-row
+            .col-md-8
+              label.form-label Insumo
+              select.form-select(name="insumos[]" required)
+                option(value="") Seleccionar insumo...
+                each insumo in insumos
+                  option(value=insumo._id) #{insumo.nombre} (#{insumo.unidad})
+            .col-md-4
+              label.form-label Cantidad
+              input.form-control(type="number" step="0.01" name="cantidades[]" required min="0.01")
+        
+        button.btn.btn-sm.btn-outline-primary.mt-3.mb-4(type="button" onclick="agregarFila()") 
+          i.bi.bi-plus-circle.me-1
+          | Añadir otro ingrediente
+          
+        button.btn.btn-primary.btn-lg.w-100(type="submit") Guardar Receta
+
+  script.
+    function agregarFila() {
+      const contenedor = document.getElementById('contenedor-ingredientes');
+      const filaOriginal = document.querySelector('.ingrediente-row');
+      const nuevaFila = filaOriginal.cloneNode(true);
+      
+      nuevaFila.querySelectorAll('input').forEach(i => i.value = '');
+      nuevaFila.querySelectorAll('select').forEach(s => s.selectedIndex = 0);
+      
+      contenedor.appendChild(nuevaFila);
+    }

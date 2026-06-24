@@ -1,0 +1,22 @@
+extends layout
+
+block content
+  .d-flex.justify-content-between.align-items-center.mb-4
+    h1 Ingresar Mercadería
+    a.btn.btn-outline-secondary(href="/insumos/view") Cancelar
+
+  .card.shadow-sm(style="max-width: 500px;")
+    .card-header.bg-success.text-white
+      h5.mb-0 Proveedor entregó: #{insumo.nombre}
+    .card-body
+      p.text-muted Stock actual en depósito: 
+        strong #{insumo.stockActual} #{insumo.unidad}
+      
+      form(action=`/insumos/ingreso-web/${insumo._id}` method="POST")
+        .mb-4
+          label.form-label ¿Qué cantidad nueva ingresó?
+          .input-group
+            input.form-control(type="number" step="0.01" name="cantidadNueva" required min="0.1")
+            span.input-group-text #{insumo.unidad}
+            
+        button.btn.btn-success.w-100(type="submit") Sumar al Inventario

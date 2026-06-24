@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1,
+    "nombre": "Juan",
+    "email": "juan@gmail.com",
+    "tipo": "sucursal",
+    "direccion": "Calle Falsa 123",
+    "telefono": "123456789",
+    "estado": 1
+  },
+  {
+    "id": 2,
+    "nombre": "D1omingo",
+    "email": "Domingo@gmail.com",
+    "tipo": "franquicia",
+    "direccion": "Avenida Principal 4156",
+    "telefono": "91187654321",
+    "estado": 0
+  },
+  {
+    "id": 3,
+    "nombre": "Sucursal Norteaa",
+    "email": "sucursal.norte@gmail.comaa",
+    "tipo": "franquisio ",
+    "direccion": "Lorenzo 450411",
+    "telefono": "4786059011",
+    "estado": 0
+  },
+  {
+    "id": 4,
+    "nombre": "Sebastian",
+    "email": "sebasterco10@gmail.com",
+    "tipo": "asaaa",
+    "direccion": "asd",
+    "telefono": "asd",
+    "estado": 0
+  },
+  {
+    "id": 5,
+    "nombre": "Sasdad",
+    "email": "sebasterco10@gmail.com",
+    "tipo": "a",
+    "direccion": "asda",
+    "telefono": "asd",
+    "estado": 0
+  },
+  {
+    "id": 6,
+    "nombre": "asd",
+    "email": "asd@asd",
+    "tipo": "asd",
+    "direccion": "asdas",
+    "telefono": "asd",
+    "estado": 0
+  }
+]

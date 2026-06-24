@@ -1,0 +1,51 @@
+extends layout
+
+block content
+  .d-flex.justify-content-between.align-items-center.mb-4
+    h1 Detalle del Pedido
+    a.btn.btn-outline-secondary(href="/pedidos/view") Volver a la Lista
+
+  .row
+    //- Ficha del Pedido
+    .col-md-4
+      .card.shadow-sm.mb-4
+        .card-header.bg-dark.text-white Resumen del Comprobante
+        .card-body
+          p.mb-2 
+            strong Cliente: 
+            | #{pedido.nombreCliente}
+          p.mb-2 
+            strong Fecha: 
+            | #{new Date(pedido.fechaCreacion).toLocaleDateString('es-AR')}
+          p.mb-2 
+            strong Estado Actual: 
+            if pedido.estado === 'Pendiente'
+              span.badge.bg-secondary Pendiente
+            else if pedido.estado === 'En Producción'
+              span.badge.bg-warning.text-dark En Producción
+            else if pedido.estado === 'Entregado'
+              span.badge.bg-success Entregado
+            else if pedido.estado === 'Cancelado'
+              span.badge.bg-danger Cancelado
+          hr
+          h4.text-end.text-primary Total: $ #{pedido.total}
+
+    //- Tabla de Productos Solicitados
+    .col-md-8
+      .card.shadow-sm
+        .card-header.bg-secondary.text-white Productos Solicitados
+        .card-body.p-0
+          table.table.table-striped.mb-0
+            thead.table-light
+              tr
+                th Producto
+                th.text-center Cantidad
+                th.text-end Precio Unitario
+                th.text-end Subtotal
+            tbody
+              each item in pedido.productos
+                tr
+                  td= item.nombre
+                  td.text-center= item.cantidad
+                  td.text-end $ #{item.precioUnitario}
+                  td.text-end.fw-bold $ #{item.cantidad * item.precioUnitario}

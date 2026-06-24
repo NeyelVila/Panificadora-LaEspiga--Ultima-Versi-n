@@ -1,0 +1,23 @@
+[
+  {
+    "id": "prod_1",
+    "nombre": "Pan de Masa Madre",
+    "categoria": "Masas",
+    "precio": 1500,
+    "activo": true
+  },
+  {
+    "id": "prod_2",
+    "nombre": "Medialunas de Manteca (Docena)",
+    "categoria": "Facturas",
+    "precio": 2500,
+    "activo": true
+  },
+  {
+    "id": "prod_f8506387",
+    "nombre": "Medialunas de Grasa (Docena)",
+    "categoria": "Facturas",
+    "precio": 2250,
+    "activo": true
+  }
+]

@@ -1,0 +1,60 @@
+extends layout
+
+block content
+  .d-flex.justify-content-between.align-items-center.mb-4
+    h1 Registrar Nuevo Pedido
+    a.btn.btn-outline-secondary(href="/pedidos/view") Cancelar
+
+  form(action="/pedidos/crear-web" method="POST")
+    .row
+      //- Columna Izquierda: Datos del Cliente
+      .col-md-4
+        .card.shadow-sm.mb-4
+          .card-header.bg-dark.text-white Datos del Cliente
+          .card-body
+            .mb-3
+              label.form-label Seleccionar Cliente
+              select.form-select(name="clienteId" required)
+                option(value="") Elegir...
+                each cliente in clientes
+                  option(value=cliente._id) #{cliente.nombre}
+            
+            .alert.alert-info.mt-4
+              i.bi.bi-info-circle.me-2
+              | El sistema calculará el total automáticamente basándose en los precios de los productos.
+
+      //- Columna Derecha: Productos del Pedido
+      .col-md-8
+        .card.shadow-sm
+          .card-header.bg-secondary.text-white Productos Solicitados
+          .card-body
+            #contenedor-productos
+              .row.mb-2.producto-row
+                .col-md-8
+                  label.form-label Producto
+                  select.form-select(name="productosIds[]" required)
+                    option(value="") Seleccionar producto...
+                    each producto in productos
+                      option(value=producto._id) #{producto.nombre} ($#{producto.precio})
+                .col-md-4
+                  label.form-label Cantidad
+                  input.form-control(type="number" min="1" name="cantidades[]" required)
+            
+            button.btn.btn-sm.btn-outline-primary.mt-3(type="button" onclick="agregarFilaProducto()") 
+              i.bi.bi-plus-circle.me-1
+              | Añadir otro producto
+
+    .mt-4
+      button.btn.btn-success.btn-lg.w-100(type="submit") Confirmar y Crear Pedido
+
+  script.
+    function agregarFilaProducto() {
+      const contenedor = document.getElementById('contenedor-productos');
+      const filaOriginal = document.querySelector('.producto-row');
+      const nuevaFila = filaOriginal.cloneNode(true);
+      
+      nuevaFila.querySelectorAll('input').forEach(i => i.value = '');
+      nuevaFila.querySelectorAll('select').forEach(s => s.selectedIndex = 0);
+      
+      contenedor.appendChild(nuevaFila);
+    }

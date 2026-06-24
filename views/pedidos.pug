@@ -1,0 +1,50 @@
+extends layout
+
+block content
+  .d-flex.justify-content-between.align-items-center.mb-4
+    h1 Gestión de Pedidos
+    a.btn.btn-primary(href="/pedidos/nuevo") 
+      i.bi.bi-plus-lg.me-1
+      | Nuevo Pedido
+
+  .card.shadow-sm
+    .card-body
+      table.table.table-hover.align-middle
+        thead.table-dark
+          tr
+            th Fecha
+            th Cliente
+            th Total
+            th Estado Actual
+            th Acciones
+        tbody
+          each pedido in pedidos
+            tr
+              td= new Date(pedido.fechaCreacion).toLocaleDateString('es-AR')
+              td= pedido.nombreCliente
+              td $ #{pedido.total}
+              td
+                if pedido.estado === 'Pendiente'
+                  span.badge.bg-secondary Pendiente
+                else if pedido.estado === 'En Producción'
+                  span.badge.bg-warning.text-dark En Producción
+                else if pedido.estado === 'Entregado'
+                  span.badge.bg-success Entregado
+                else if pedido.estado === 'Cancelado'
+                  span.badge.bg-danger Cancelado
+                else
+                  span.badge.bg-info= pedido.estado
+              td
+                .d-flex.gap-2.align-items-center
+                  a.btn.btn-sm.btn-outline-secondary(href=`/pedidos/${pedido._id}/detalle` title="Ver Detalle")
+                    i.bi.bi-eye
+                  
+                  //- Menú desplegable para seleccionar cualquiera de los 4 estados
+                  form(action=`/pedidos/estado-web/${pedido._id}` method="POST" class="d-flex gap-1 mb-0")
+                    select.form-select.form-select-sm(name="nuevoEstado" style="width: 140px;")
+                      option(value="Pendiente" selected=pedido.estado==='Pendiente') Pendiente
+                      option(value="En Producción" selected=pedido.estado==='En Producción') En Producción
+                      option(value="Entregado" selected=pedido.estado==='Entregado') Entregado
+                      option(value="Cancelado" selected=pedido.estado==='Cancelado') Cancelado
+                    button.btn.btn-sm.btn-outline-primary(type="submit" title="Actualizar Estado")
+                      i.bi.bi-check2

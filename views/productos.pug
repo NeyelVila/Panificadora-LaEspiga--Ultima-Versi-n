@@ -1,0 +1,33 @@
+extends layout
+
+block content
+  .d-flex.justify-content-between.align-items-center.mb-4
+    h1 Catálogo de Productos
+    a.btn.btn-primary(href="/productos/nuevo") 
+      i.bi.bi-plus-lg.me-1
+      | Nuevo Producto
+
+  .card.shadow-sm
+    .card-body
+      table.table.table-hover
+        thead.table-dark
+          tr
+            th Nombre
+            th Categoría
+            th Precio
+            th Estado
+            th Acciones
+        tbody
+          each producto in productos
+            tr
+              td= producto.nombre
+              td= producto.categoria
+              td $ #{producto.precio}
+              td
+                span.badge(class=producto.activo ? 'bg-success' : 'bg-danger')
+                  = producto.activo ? 'Activo' : 'Inactivo'
+              td
+                .d-flex.gap-2
+                  a.btn.btn-sm.btn-outline-secondary(href=`/productos/${producto._id}/receta`) Ver Receta
+                  form(action=`/productos/baja-web/${producto._id}` method="POST" onsubmit="return confirm('¿Seguro que deseas dar de baja este producto?');")
+                    button.btn.btn-sm.btn-outline-danger(type="submit") Dar de baja
