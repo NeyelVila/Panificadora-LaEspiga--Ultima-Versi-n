@@ -7,6 +7,7 @@ import Cliente from './src/models/clientes.schema.js';
 import Pedido from './src/models/Pedido.js';
 import Insumo from './src/models/Insumo.js';
 
+
 const app = express();
 
 // Obtener el directorio actual
@@ -59,20 +60,22 @@ app.get('/', async (req, res) => {
 // ==========================================
 // IMPORTACIÓN DE RUTAS (Ahora con import y .js)
 // ==========================================
+import facturacionRoutes from './src/routes/facturacion.routes.js';
 import clientesRoutes from './src/routes/clientes.routes.js';
 import productosRoutes from './src/routes/productos.routes.js';
 import pedidosRoutes from './src/routes/pedidos.routes.js'; 
 import insumosRoutes from './src/routes/insumos.routes.js';
 import recetasRoutes from './src/routes/recetas.routes.js';
-import facturacionRoutes from './src/routes/facturacion.routes.js';
+
 
 // USO DE RUTAS
+app.use('/facturacion', facturacionRoutes);
 app.use('/clientes', clientesRoutes);
 app.use('/productos', productosRoutes);
 app.use('/pedidos', pedidosRoutes);
 app.use('/insumos', insumosRoutes);
 app.use('/recetas', recetasRoutes);
-app.use('/facturacion', facturacionRoutes);
+
 
 // Rutas no encontradas (404)
 app.use((req, res) => {

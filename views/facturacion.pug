@@ -1,0 +1,55 @@
+extends layout
+
+block content
+  .d-flex.justify-content-between.align-items-center.mb-4
+    h1 Caja y Facturación
+    div
+      a.btn.btn-outline-secondary.me-2(href="/") 
+        i.bi.bi-house-door.me-1
+        | Dashboard
+      span.badge.bg-success.fs-5 Simulación de Efectivo
+
+  //- NUEVO: Tarjeta de Total Facturado
+  .row.mb-4
+    .col-md-4
+      .card.text-bg-success.shadow-sm
+        .card-body
+          h5.card-title 
+            i.bi.bi-cash-stack.me-2
+            | Total Ingresado a Caja
+          //- Mostramos la variable calculada en el controlador
+          p.card-text.display-5.fw-bold $ #{totalFacturado || 0}
+
+  .card.shadow-sm
+    .card-header.bg-dark.text-white
+      h5.mb-0 Pedidos Pendientes de Cobro
+    .card-body
+      if pedidos && pedidos.length === 0
+        .alert.alert-info.mb-0
+          i.bi.bi-info-circle.me-2
+          | No hay pedidos pendientes de cobro en este momento.
+      else
+        table.table.table-hover.align-middle
+          thead.table-light
+            tr
+              th Fecha
+              th Cliente
+              th Estado del Pedido
+              th.text-end Total a Cobrar
+              th.text-center Acción
+          tbody
+            each pedido in pedidos
+              tr
+                td= new Date(pedido.fechaCreacion).toLocaleDateString('es-AR')
+                td.fw-bold= pedido.clienteId ? pedido.clienteId.nombre : 'Consumidor Final'
+                td
+                  if pedido.estado === 'Pendiente' || pedido.estado === 'En Producción'
+                    span.badge.bg-warning.text-dark= pedido.estado
+                  else
+                    span.badge.bg-primary= pedido.estado
+                td.text-end.fs-5.fw-bold.text-danger $ #{pedido.total}
+                td.text-center
+                  form(action=`/facturacion/cobrar/${pedido._id}` method="POST" class="mb-0")
+                    button.btn.btn-success(type="submit" onclick="return confirm('¿Confirmar ingreso de efectivo a la caja?');")
+                      i.bi.bi-cash-coin.me-1
+                      | Cobrar 

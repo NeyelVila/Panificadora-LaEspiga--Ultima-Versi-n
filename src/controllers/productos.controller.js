@@ -34,15 +34,15 @@ class ProductosController {
       res.status(400).json({ error: true, mensaje: error.message });
     }
   };
-  listarParaWeb = async (req, res) => {
-  try {
-    const productos = await productosService.obtenerTodos();
-    // 'productos' es el nombre del archivo productos.pug
-    // { productos } es el objeto con los datos que le pasamos a Pug
-    res.render('productos', { productos }); 
-  } catch (error) {
-    res.status(500).send("Error al cargar la página de productos");
-  }
+   listarParaWeb = async (req, res) => {
+    try {
+      // ¿Estás seguro que 'productosService.obtenerTodos()' trae el modelo Mongoose?
+      // Si el servicio hace un .lean(), a veces los campos nuevos no se ven si no se actualizaron.
+      const productos = await Producto.find().lean(); 
+      res.render('productos', { productos }); 
+    } catch (error) {
+      res.status(500).send("Error");
+    }
   };
   // Muestra la pantalla del formulario
    renderizarFormulario = async (req, res) => {
@@ -90,13 +90,22 @@ class ProductosController {
 };
 
   // Ejecuta la baja lógica y recarga la tabla
-  bajaDesdeWeb = async (req, res) => {
+ bajaDesdeWeb = async (req, res) => {
     try {
-      await productosService.darDeBaja(req.params.id);
-      res.redirect('/productos/view');
+      const { id } = req.params;
+      
+      // Intentamos eliminar el producto por su ID
+      const productoEliminado = await Producto.findByIdAndDelete(id);
+
+      if (!productoEliminado) {
+        return res.status(404).send("Producto no encontrado para eliminar");
+      }
+
+      // Redirigimos a la ruta donde vive la tabla de productos
+      res.redirect('/productos/view'); 
     } catch (error) {
-      // Si tira error de regla de negocio (ej. "Está en un pedido en curso")
-      res.status(400).send(error.message); 
+      console.error("🔴 ERROR AL ELIMINAR:", error);
+      res.status(400).send("Error al eliminar el producto: " + error.message); 
     }
   };
 
@@ -160,6 +169,39 @@ class ProductosController {
       res.status(400).send("Error al guardar la receta: " + error.message);
     }
   };
+  // Muestra la pantalla con los datos cargados
+  renderizarEdicionWeb = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const producto = await Producto.findById(id); 
+      
+      if (!producto) {
+        return res.status(404).send("Producto no encontrado");
+      }
+
+      res.render('productos_edit', { producto });
+    } catch (error) {
+      console.error("🔴 Error al cargar edición:", error);
+      res.status(500).send("Error al cargar el formulario de edición");
+    }
+  };
+
+  // Atrapa los datos nuevos y los guarda
+  actualizarDesdeWeb = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { nombre, precio } = req.body; 
+
+      await Producto.findByIdAndUpdate(id, { nombre, precio });
+      res.redirect('/productos/view');
+
+    } catch (error) {
+      console.error("🔴 Error al actualizar:", error);
+      res.status(500).send("Error al actualizar el producto");
+    }
+  };
+
+
  };
 
 

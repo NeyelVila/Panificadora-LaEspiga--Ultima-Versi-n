@@ -1,7 +1,7 @@
 import Pedido from '../models/Pedido.js';
 import Insumo from '../models/Insumo.js';
 import Receta from '../models/Receta.js';
-import Cliente from '../models/clientes.schema.js'; // Ajusta al nombre de tu schema de clientes
+import Cliente from '../models/clientes.schema.js';
 import Producto from '../models/Producto.js';
 
 class PedidosService {
@@ -12,38 +12,54 @@ class PedidosService {
   async crear(datos) {
     const { clienteId, items } = datos;
 
-    // 1. Validar Cliente (Asegurarnos de que existe y su estado es 1)
+    // 1. Validar Cliente
     const cliente = await Cliente.findById(clienteId);
     if (!cliente || cliente.estado !== 1) {
       throw new Error("Cliente inválido o inactivo.");
     }
 
-    // 2. Validar Productos y calcular el Total
-    let total = 0;
-    const productosValidados = [];
+    // 2. Pre-validación de Stock y cálculo de Total
+    // Esto evita que entren pedidos que no podemos producir
+    const insumosNecesarios = {};
 
     for (const item of items) {
       const producto = await Producto.findById(item.productoId);
-      
       if (!producto || !producto.activo) {
         throw new Error(`El producto ${item.productoId} no existe o está inactivo.`);
       }
-      if (item.cantidad <= 0) {
-        throw new Error(`La cantidad para ${producto.nombre} debe ser mayor a 0.`);
-      }
 
-      total += producto.precio * item.cantidad;
-      
-      // Armamos el item con los datos reales de la DB
+      // Buscamos la receta para saber qué insumos consume
+      const receta = await Receta.findOne({ productoId: producto._id });
+      if (receta) {
+        for (const ing of receta.ingredientes) {
+          const idStr = ing.insumoId.toString();
+          insumosNecesarios[idStr] = (insumosNecesarios[idStr] || 0) + (ing.cantidad * item.cantidad);
+        }
+      }
+    }
+
+    // 3. Verificamos contra la base de datos antes de crear nada
+    for (const insumoId in insumosNecesarios) {
+      const insumo = await Insumo.findById(insumoId);
+      if (!insumo || insumo.stockActual < insumosNecesarios[insumoId]) {
+        throw new Error(`Stock insuficiente para producir este pedido (${insumo ? insumo.nombre : 'Insumo'}).`);
+      }
+    }
+
+    // 4. Si todo es correcto, creamos el pedido
+    let total = 0;
+    const productosValidados = [];
+    for (const item of items) {
+      const prod = await Producto.findById(item.productoId);
+      total += prod.precio * item.cantidad;
       productosValidados.push({
-        productoId: producto._id,
-        nombre: producto.nombre,
+        productoId: prod._id,
+        nombre: prod.nombre,
         cantidad: item.cantidad,
-        precioUnitario: producto.precio
+        precioUnitario: prod.precio
       });
     }
 
-    // 3. Crear el pedido
     const nuevoPedido = new Pedido({
       clienteId: cliente._id,
       nombreCliente: cliente.nombre,
@@ -57,63 +73,55 @@ class PedidosService {
  //AUTOMATIZACIÓN DE STOCK
 
   // AUTOMATIZACIÓN DE STOCK CON MONGODB
-  async actualizarEstado(id, nuevoEstado) {
+ async actualizarEstado(id, nuevoEstado) {
     const estadosPermitidos = ['Pendiente', 'En Producción', 'Despachado', 'Entregado'];
     if (!estadosPermitidos.includes(nuevoEstado)) {
       throw new Error("Estado inválido.");
     }
 
-    // Buscamos el pedido en MongoDB
     const pedido = await Pedido.findById(id);
     if (!pedido) throw new Error("Pedido no encontrado.");
 
-    // Solo descontamos stock si pasa a Producción por primera vez
+    console.log(`DEBUG: Intentando pasar de ${pedido.estado} a ${nuevoEstado}`);
+
+    // VERIFICACIÓN: ¿Entra aquí?
     if (pedido.estado === 'Pendiente' && nuevoEstado === 'En Producción') {
+      console.log("DEBUG: Entrando a la lógica de descuento de insumos...");
       
-      // 1. Calcular insumos totales requeridos para todo el pedido
       const insumosRequeridos = {}; 
 
       for (const item of pedido.productos) {
-        // Buscamos la receta en MongoDB
         const receta = await Receta.findOne({ productoId: item.productoId });
+        
         if (!receta) {
-          throw new Error(`El producto ${item.nombre} no tiene una receta configurada. Imposible producir.`);
+          console.error(`DEBUG: El producto ${item.nombre} NO tiene receta.`);
+          throw new Error(`El producto ${item.nombre} no tiene receta.`);
         }
 
-        // Multiplicamos la cantidad del ingrediente por la cantidad de productos pedidos
         for (const ing of receta.ingredientes) {
-          const insumoIdStr = ing.insumoId.toString(); // En Mongo los IDs son objetos, los pasamos a texto para usarlos de llave
+          const insumoIdStr = ing.insumoId.toString();
           if (!insumosRequeridos[insumoIdStr]) insumosRequeridos[insumoIdStr] = 0;
           insumosRequeridos[insumoIdStr] += (ing.cantidad * item.cantidad);
         }
       }
 
-      // 2. Verificar que haya stock suficiente de todo ANTES de descontar
+      console.log("DEBUG: Insumos calculados:", insumosRequeridos);
+
+      // Descontar
       for (const insumoId in insumosRequeridos) {
         const insumoDb = await Insumo.findById(insumoId);
-        if (!insumoDb) throw new Error(`Insumo no encontrado en la base de datos.`);
-
-        const cantidadNecesaria = insumosRequeridos[insumoId];
-        if (insumoDb.stockActual < cantidadNecesaria) {
-          const faltante = cantidadNecesaria - insumoDb.stockActual;
-          throw new Error(`Stock insuficiente de ${insumoDb.nombre}. Faltan ${faltante} ${insumoDb.unidad}.`);
+        if (insumoDb) {
+          console.log(`DEBUG: Descontando ${insumosRequeridos[insumoId]} de ${insumoDb.nombre}`);
+          insumoDb.stockActual -= insumosRequeridos[insumoId];
+          await insumoDb.save();
         }
       }
-
-      // 3. Descontar el stock (Si llegamos aquí, es porque alcanza todo)
-      for (const insumoId in insumosRequeridos) {
-        const insumoDb = await Insumo.findById(insumoId);
-        insumoDb.stockActual -= insumosRequeridos[insumoId];
-        await insumoDb.save(); // Guardamos el nuevo stock en MongoDB
-      }
+    } else {
+      console.log("DEBUG: No se cumplió la condición para descontar insumos (¿ya estaba en Producción?).");
     }
 
-    // Actualizamos el estado del pedido y guardamos
-    const estadoAnterior = pedido.estado;
     pedido.estado = nuevoEstado;
-    const pedidoActualizado = await pedido.save();
-    const mensaje = `Pedido actualizado de ${estadoAnterior} a ${nuevoEstado}.`;
-    return { pedido: pedidoActualizado, mensaje };
+    return await pedido.save();
   }
 }
 

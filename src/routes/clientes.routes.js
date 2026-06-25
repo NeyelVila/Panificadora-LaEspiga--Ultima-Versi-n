@@ -13,22 +13,23 @@ import { getClientesActivos } from '../services/clientes.service.js';
 
 const router = express.Router();
 
-// LISTAR
-router.get('/', getClientes);
+// LISTAR (Cambiamos '/' por '/view' para que coincida con la URL)
+router.get('/view', getClientes);
 
 // FORM CREAR
 router.get('/nuevo', getNuevoCliente);
-// crear cliente
-router.post('/', postCliente);
 
-// ELIMINAR
-router.post('/:id/eliminar', deleteCliente);
+// CREAR CLIENTE (Cambiamos '/' por '/crear' para que coincida con action="/clientes/crear")
+router.post('/crear', postCliente);
 
-// FORM EDITAR
-router.get('/:id/editar', getClienteEditar);
+// ELIMINAR (Invertimos el orden a '/eliminar/:id' para coincidir con el form)
+router.post('/eliminar/:id', deleteCliente);
 
-// EDITAR
-router.post('/:id/editar', putCliente);
+// FORM EDITAR (Invertimos a '/editar/:id')
+router.get('/editar/:id', getClienteEditar);
+
+// ACTUALIZAR (Cambiamos a '/actualizar/:id' para que coincida con el action)
+router.post('/actualizar/:id', putCliente);
 
 // ECMAScript Modules
 export default router;

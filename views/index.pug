@@ -1,14 +1,3 @@
-//- doctype html
-//- html
-//-   head
-//-     title Menú
-//-     link(rel="stylesheet" href="/styles/styles.css")
-//-   body
-//-     .container
-//-       h1 Panificadora - La Espiga de Oro
-
-//-       a.btn(href="/clientes") Ver clientes
-//-       a.btn(href="/clientes/nuevo") Crear cliente
 extends layout
 
 block content
@@ -16,23 +5,36 @@ block content
   p.text-muted Gestión operativa de La Espiga de Oro
 
   .row.mt-4
+    //- Tarjeta: Clientes
     .col-md-4
-      .card.text-bg-primary.mb-3
+      .card.text-bg-primary.mb-3.shadow-sm
         .card-body
-          h5.card-title Clientes Activos
-          //- Inyectamos la variable aquí
-          p.card-text.display-4 #{clientesActivos}
+          h5.card-title 
+            i.bi.bi-people-fill.me-2 
+            | Clientes Activos
+          p.card-text.display-4.fw-bold #{clientesActivos || 0}
+          //- ¡Enlace actualizado!
+          a.btn.btn-light.btn-sm.mt-2(href="/clientes/view") Administrar clientes
           
+    //- Tarjeta: Pedidos
     .col-md-4
-      .card.text-bg-success.mb-3
+      .card.text-bg-success.mb-3.shadow-sm
         .card-body
-          h5.card-title Pedidos Totales
-          //- Inyectamos la variable aquí
-          p.card-text.display-4 #{pedidosMes}
+          h5.card-title 
+            i.bi.bi-receipt.me-2
+            | Pedidos Totales
+          p.card-text.display-4.fw-bold #{pedidosMes || 0}
+          //- ¡Enlace actualizado!
+          a.btn.btn-light.btn-sm.mt-2(href="/pedidos/view") Ver pedidos
           
+    //- Tarjeta: Alertas de Stock (Color dinámico)
     .col-md-4
-      .card.text-bg-warning.mb-3
+      //- Lógica: Si hay más de 0 alertas, fondo rojo. Si no, fondo gris.
+      .card.mb-3.shadow-sm(class=(alertasStock > 0 ? 'text-bg-danger' : 'text-bg-secondary'))
         .card-body
-          h5.card-title Alertas de Stock
-          //- Inyectamos la variable aquí
-          p.card-text.display-4 #{alertasStock}
+          h5.card-title 
+            i.bi.bi-exclamation-triangle-fill.me-2
+            | Alertas de Stock
+          p.card-text.display-4.fw-bold #{alertasStock || 0}
+          //- ¡Enlace actualizado!
+          a.btn.btn-light.btn-sm.mt-2(href="/insumos/view") Revisar inventario

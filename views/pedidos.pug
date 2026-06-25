@@ -7,44 +7,86 @@ block content
       i.bi.bi-plus-lg.me-1
       | Nuevo Pedido
 
+  //- FILTROS EN TIEMPO REAL
+  .card.shadow-sm.mb-4
+    .card-body
+      .row.g-3.align-items-end
+        .col-md-8
+          label.form-label Filtrar por Estado
+          div
+            button.btn.btn-outline-dark.btn-sm.me-1(onclick="filtrarTabla('Todos')") Todos
+            button.btn.btn-outline-secondary.btn-sm.me-1(onclick="filtrarTabla('Pendiente')") Pendiente
+            button.btn.btn-outline-warning.btn-sm.me-1(onclick="filtrarTabla('En Producción')") En Prod.
+            button.btn.btn-outline-info.btn-sm.me-1(onclick="filtrarTabla('Despachado')") Despachado
+            button.btn.btn-outline-success.btn-sm.me-1(onclick="filtrarTabla('Entregado')") Entregado
+            button.btn.btn-outline-danger.btn-sm.me-1(onclick="filtrarTabla('Cancelado')") Cancelado
+        .col-md-4
+          label.form-label Fecha
+          input.form-control.form-control-sm(type="date" id="fechaFiltro" onchange="filtrarTabla()")
+
+  //- TABLA DE PEDIDOS
   .card.shadow-sm
     .card-body
-      table.table.table-hover.align-middle
+      table.table.table-hover.align-middle(id="tablaPedidos")
         thead.table-dark
           tr
-            th Fecha
+            th Fecha / Hora
             th Cliente
             th Total
-            th Estado Actual
+            th Estado
             th Acciones
         tbody
           each pedido in pedidos
             tr
-              td= new Date(pedido.fechaCreacion).toLocaleDateString('es-AR')
+              td(data-fecha=new Date(pedido.fechaCreacion).toISOString().split('T')[0])
+                = new Date(pedido.fechaCreacion).toLocaleString('es-AR')
               td= pedido.nombreCliente
               td $ #{pedido.total}
-              td
+              td.estado-celda(data-estado=pedido.estado)
                 if pedido.estado === 'Pendiente'
                   span.badge.bg-secondary Pendiente
                 else if pedido.estado === 'En Producción'
                   span.badge.bg-warning.text-dark En Producción
+                else if pedido.estado === 'Despachado'
+                  span.badge.bg-info.text-dark Despachado
                 else if pedido.estado === 'Entregado'
                   span.badge.bg-success Entregado
                 else if pedido.estado === 'Cancelado'
                   span.badge.bg-danger Cancelado
                 else
-                  span.badge.bg-info= pedido.estado
+                  span.badge.bg-dark= pedido.estado
               td
                 .d-flex.gap-2.align-items-center
                   a.btn.btn-sm.btn-outline-secondary(href=`/pedidos/${pedido._id}/detalle` title="Ver Detalle")
                     i.bi.bi-eye
                   
-                  //- Menú desplegable para seleccionar cualquiera de los 4 estados
-                  form(action=`/pedidos/estado-web/${pedido._id}` method="POST" class="d-flex gap-1 mb-0")
-                    select.form-select.form-select-sm(name="nuevoEstado" style="width: 140px;")
-                      option(value="Pendiente" selected=pedido.estado==='Pendiente') Pendiente
-                      option(value="En Producción" selected=pedido.estado==='En Producción') En Producción
-                      option(value="Entregado" selected=pedido.estado==='Entregado') Entregado
-                      option(value="Cancelado" selected=pedido.estado==='Cancelado') Cancelado
-                    button.btn.btn-sm.btn-outline-primary(type="submit" title="Actualizar Estado")
-                      i.bi.bi-check2
+                  if pedido.estado === 'Pendiente'
+                    form(action=`/pedidos/avanzar/${pedido._id}` method="POST" class="mb-0")
+                      button.btn.btn-sm.btn-warning(type="submit")
+                        i.bi.bi-gear-fill.me-1
+                        | Producir
+                    form(action=`/pedidos/cancelar/${pedido._id}` method="POST" class="mb-0")
+                      button.btn.btn-sm.btn-danger(type="submit" onclick="return confirm('¿Seguro?')")
+                        i.bi.bi-x-circle
+
+                  else if pedido.estado === 'En Producción'
+                    form(action=`/pedidos/asignar-despacho/${pedido._id}` method="POST" class="d-flex gap-1 mb-0")
+                      input.form-control.form-control-sm(type="time" name="horario" required title="Hora de despacho")
+                      button.btn.btn-sm.btn-primary(type="submit" title="Despachar")
+                        i.bi.bi-truck
+                    form(action=`/pedidos/cancelar/${pedido._id}` method="POST" class="mb-0")
+                      button.btn.btn-sm.btn-danger(type="submit" onclick="return confirm('¿Seguro?')")
+                        i.bi.bi-x-circle
+
+  script.
+    function filtrarTabla(estadoFiltro = 'Todos') {
+      const fechaFiltro = document.getElementById('fechaFiltro').value;
+      const filas = document.querySelectorAll('#tablaPedidos tbody tr');
+      filas.forEach(fila => {
+        const estadoFila = fila.querySelector('.estado-celda').getAttribute('data-estado');
+        const fechaFila = fila.querySelector('td[data-fecha]').getAttribute('data-fecha');
+        const cumpleEstado = (estadoFiltro === 'Todos' || estadoFila === estadoFiltro);
+        const cumpleFecha = (!fechaFiltro || fechaFila === fechaFiltro);
+        fila.style.display = (cumpleEstado && cumpleFecha) ? '' : 'none';
+      });
+    }

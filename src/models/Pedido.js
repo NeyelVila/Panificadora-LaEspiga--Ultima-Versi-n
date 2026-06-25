@@ -10,9 +10,12 @@ const pedidoSchema = new Schema({
     precioUnitario: Number
   }],
   total: { type: Number, required: true },
+  pagado: { type: Boolean, default: false },
+  fechaPedido: { type: Date, default: Date.now },
+  horarioDespacho: { type: String, default: null },
   estado: { 
     type: String, 
-    enum: ['Pendiente', 'En Producción', 'Despachado', 'Entregado'], 
+    enum: ['Pendiente', 'En Producción', 'Despachado', 'Entregado', 'Cancelado'], 
     default: 'Pendiente' 
   },
   fechaCreacion: { type: Date, default: Date.now }

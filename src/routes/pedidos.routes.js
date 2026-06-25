@@ -18,6 +18,9 @@ router.get('/nuevo', pedidosController.renderizarFormulario);
 router.post('/crear-web', pedidosController.crearDesdeWeb);   
 router.get('/:id/detalle', pedidosController.verDetalleWeb);
 router.post('/estado-web/:id', pedidosController.cambiarEstadoWeb);
+router.post('/avanzar/:id', pedidosController.avanzarEstadoPedido);
+router.post('/cancelar/:id', pedidosController.cancelarPedido);
+router.post('/asignar-despacho/:id', pedidosController.asignarHorarioYDespachar);
 
 // ==========================================
 // 2. RUTAS API / THUNDER CLIENT

@@ -63,7 +63,7 @@ const postCliente = async (req, res) => {
       .send("Faltan datos");
     }
     await crearCliente(req.body);
-    res.redirect('/clientes');
+    res.redirect('/clientes/view');
 
   } catch (error) {
     console.log(error);
@@ -80,7 +80,7 @@ const deleteCliente = async(req, res) => {
     // agarra la id del cliente a eliminar desde los parámetros de la URL
     const id = req.params.id;
     await eliminarCliente(id);
-    res.redirect('/clientes');
+    res.redirect('/clientes/view');
 
   } catch (error) {
     res.status(500).json({ error: "No se pudo eliminar el cliente" });
@@ -107,7 +107,7 @@ const putCliente = async(req, res) => {
       telefono,
     });
 
-    res.redirect('/clientes');
+    res.redirect('/clientes/view');
 
   } catch (error) {
     res.status(500).json({ error: "No se pudo actualizar el cliente" });

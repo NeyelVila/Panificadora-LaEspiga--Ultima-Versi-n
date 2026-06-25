@@ -1,19 +1,46 @@
-//- doctype html
-//- html
-//-   head
-//-     title Clientes
-//-     link(rel="stylesheet" href="/styles/styles.css")
-//-   body
-//-     h1 Lista de clientes
+extends layout
 
-//-     ul
-//-       each cliente in clientes
-//-         li
-//-           span #{cliente.nombre} - #{cliente.email} - #{cliente.telefono} - #{cliente.direccion} - #{cliente.tipo}
+block content
+  .d-flex.justify-content-between.align-items-center.mb-4
+    h1 Clientes
+    div
+      a.btn.btn-outline-secondary.me-2(href="/") 
+        i.bi.bi-house-door.me-1
+        | Dashboard
+      a.btn.btn-primary(href="/clientes/nuevo") 
+        i.bi.bi-plus-circle.me-1
+        | Nuevo Cliente
 
-//-           div
-//-             a.btn(href=`/clientes/${cliente.id}/editar`) Editar
-//-             form(action=`/clientes/${cliente.id}/eliminar` method="POST" style="display:inline")
-//-               button.btn.eliminar(type="submit") X
-
-//-     a.btn.secundario(href="/") Volver
+  .card.shadow-sm
+    .card-body
+      if clientes && clientes.length > 0
+        table.table.table-hover.align-middle
+          thead.table-light
+            tr
+              th Nombre
+              th Email
+              th Teléfono
+              th Dirección
+              th Tipo
+              th.text-center Acciones
+          tbody
+            each cliente in clientes
+              tr
+                td.fw-bold #{cliente.nombre}
+                td #{cliente.email}
+                td #{cliente.telefono}
+                td #{cliente.direccion}
+                td
+                  span.badge.bg-secondary.text-capitalize #{cliente.tipo}
+                td.text-center
+                  //- Botón para ir a la vista de edición
+                  a.btn.btn-sm.btn-outline-primary.me-2(href=`/clientes/editar/${cliente._id}`)
+                    i.bi.bi-pencil
+                  //- Formulario para dar de baja / eliminar
+                  form(action=`/clientes/eliminar/${cliente._id}` method="POST" class="d-inline mb-0")
+                    button.btn.btn-sm.btn-outline-danger(type="submit" onclick="return confirm('¿Dar de baja a este cliente?');")
+                      i.bi.bi-trash
+      else
+        .alert.alert-info.mb-0 
+          i.bi.bi-info-circle.me-2
+          | No hay clientes registrados en el sistema.

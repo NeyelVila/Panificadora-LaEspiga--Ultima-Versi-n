@@ -19,6 +19,8 @@ router.post('/baja-web/:id', productosController.bajaDesdeWeb);
 router.get('/:id/receta', productosController.verRecetaWeb);
 router.get('/:id/nueva-receta', productosController.renderizarNuevaReceta);
 router.post('/:id/crear-receta', productosController.crearRecetaParaProductoWeb);
+router.get('/editar-web/:id', productosController.renderizarEdicionWeb);
+router.post('/actualizar-web/:id', productosController.actualizarDesdeWeb);
 
 
 // ==========================================
