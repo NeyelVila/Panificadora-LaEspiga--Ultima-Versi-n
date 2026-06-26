@@ -8,6 +8,7 @@ import {errorHandler} from './src/middleware/errorHandler.middleware.js';
 import Cliente from './src/models/clientes.schema.js';
 import Pedido from './src/models/Pedido.js';
 import Insumo from './src/models/Insumo.js';
+import {requerirAutenticacion} from './src/middleware/auth.middleware.js';
 
 
 const app = express();
@@ -45,7 +46,7 @@ app.set('view engine', 'pug');
 app.use(logger);
 
 // Ruta de ejemplo para renderizar una vista pug
-app.get('/', async (req, res) => {
+app.get('/',requerirAutenticacion, async (req, res) => {
   try {
     // Contamos clientes activos (estado: 1)
     const clientesActivos = await Cliente.countDocuments({ estado: 1 });
