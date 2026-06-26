@@ -12,7 +12,7 @@ class ProductosController {
       const productos = productosService.obtenerTodos();
       res.status(200).json({ error: false, data: productos });
     } catch (error) {
-      res.status(500).json({ error: true, mensaje: error.message });
+      next(error); // Pasamos el error al middleware global de manejo de errores
     }
   };
 
@@ -22,7 +22,7 @@ class ProductosController {
       const nuevoProducto = await productosService.crear(req.body); 
       res.status(201).json({ error: false, data: nuevoProducto });
     } catch (error) {
-      res.status(400).json({ error: true, mensaje: error.message });
+      next(error); // Pasamos el error al middleware global de manejo de errores
     }
   };
 
@@ -31,7 +31,7 @@ class ProductosController {
       const producto = productosService.darDeBaja(req.params.id);
       res.status(200).json({ error: false, data: producto, mensaje: "Producto desactivado correctamente." });
     } catch (error) {
-      res.status(400).json({ error: true, mensaje: error.message });
+      next(error); // Pasamos el error al middleware global de manejo de errores
     }
   };
    listarParaWeb = async (req, res) => {
@@ -41,7 +41,7 @@ class ProductosController {
       const productos = await Producto.find().lean(); 
       res.render('productos', { productos }); 
     } catch (error) {
-      res.status(500).send("Error");
+      next(error); // Pasamos el error al middleware global de manejo de errores
     }
   };
   // Muestra la pantalla del formulario
@@ -51,7 +51,7 @@ class ProductosController {
      const insumos = await Insumo.find({ activo: true });
      res.render('productos_form', { insumos });
     } catch (error) {
-    res.status(500).send("Error al cargar el formulario");
+      next(error); // Pasamos el error al middleware global de manejo de errores
     }
    };
 
@@ -85,7 +85,7 @@ class ProductosController {
 
     res.redirect('/productos/view');
   } catch (error) {
-    res.status(400).send("Error al crear: " + error.message);
+    next(error); // Pasamos el error al middleware global de manejo de errores
   }
 };
 
@@ -104,8 +104,7 @@ class ProductosController {
       // Redirigimos a la ruta donde vive la tabla de productos
       res.redirect('/productos/view'); 
     } catch (error) {
-      console.error("🔴 ERROR AL ELIMINAR:", error);
-      res.status(400).send("Error al eliminar el producto: " + error.message); 
+      next(error); // Pasamos el error al middleware global de manejo de errores
     }
   };
 
@@ -118,7 +117,7 @@ class ProductosController {
       
       res.render('receta_detalle', { producto, receta });
     } catch (error) {
-      res.status(500).send("Error al cargar la receta");
+      next(error); // Pasamos el error al middleware global de manejo de errores
     }
   };
   // Muestra el formulario para adjudicar una receta a un producto existente
@@ -131,7 +130,7 @@ class ProductosController {
       
       res.render('recetas_form', { producto, insumos });
     } catch (error) {
-      res.status(500).send("Error al cargar el formulario: " + error.message);
+      next(error); // Pasamos el error al middleware global de manejo de errores
     }
   };
 
@@ -166,7 +165,7 @@ class ProductosController {
       // Redirigimos a la vista de la receta para que vea el resultado
       res.redirect(`/productos/${productoId}/receta`);
     } catch (error) {
-      res.status(400).send("Error al guardar la receta: " + error.message);
+      next(error); // Pasamos el error al middleware global de manejo de errores
     }
   };
   // Muestra la pantalla con los datos cargados
@@ -181,8 +180,7 @@ class ProductosController {
 
       res.render('productos_edit', { producto });
     } catch (error) {
-      console.error("🔴 Error al cargar edición:", error);
-      res.status(500).send("Error al cargar el formulario de edición");
+      next(error); // Pasamos el error al middleware global de manejo de errores
     }
   };
 
@@ -196,8 +194,7 @@ class ProductosController {
       res.redirect('/productos/view');
 
     } catch (error) {
-      console.error("🔴 Error al actualizar:", error);
-      res.status(500).send("Error al actualizar el producto");
+      next(error); // Pasamos el error al middleware global de manejo de errores
     }
   };
 

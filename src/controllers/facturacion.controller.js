@@ -23,7 +23,7 @@ class FacturacionController {
         totalFacturado: totalFacturado 
       });
     } catch (error) {
-      res.status(500).send("Error al cargar la caja: " + error.message);
+      next(error); // Pasamos el error al middleware global de manejo de errores
     }
   };
 
@@ -59,8 +59,7 @@ class FacturacionController {
 
       res.redirect('/facturacion/view');
     } catch (error) {
-      console.error("🔴 ERROR EN EL COBRO:", error);
-      res.status(400).send("Error al procesar el cobro: " + error.message);
+      next(error); // Pasamos el error al middleware global de manejo de errores
     }
   };
 }

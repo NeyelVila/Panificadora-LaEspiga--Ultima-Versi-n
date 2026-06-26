@@ -15,7 +15,7 @@ const getClientes = async (req, res) => {
       clientes: clientesActivos,
     });
   } catch (error) {
-    res.status(500).json({ error: "No se pudieron obtener los clientes" });
+    next(error); // Pasamos el error al middleware global de manejo de errores
   }
 };
 
@@ -36,8 +36,7 @@ const getClienteEditar = async (req, res) => {
     res.render('clientes_edit', { cliente });
 
   } catch (error) {
-    res.status(500)
-    .json({ error: "No se pudo obtener el cliente" });
+    next(error); // Pasamos el error al middleware global de manejo de errores
   }
 };
 
@@ -66,12 +65,7 @@ const postCliente = async (req, res) => {
     res.redirect('/clientes/view');
 
   } catch (error) {
-    console.log(error);
-     if (error.name === 'ValidationError') {
-        const mensajes = Object.values(error.errors).map(e => e.message);
-        return res.status(400).json({ error: mensajes });
-    }
-    res.status(500).json({ error: "No se pudo crear el cliente" });
+    next(error); // Pasamos el error al middleware global de manejo de errores
   }
 };
 
@@ -83,7 +77,7 @@ const deleteCliente = async(req, res) => {
     res.redirect('/clientes/view');
 
   } catch (error) {
-    res.status(500).json({ error: "No se pudo eliminar el cliente" });
+    next(error); // Pasamos el error al middleware global de manejo de errores
   }
 };
 
@@ -110,7 +104,7 @@ const putCliente = async(req, res) => {
     res.redirect('/clientes/view');
 
   } catch (error) {
-    res.status(500).json({ error: "No se pudo actualizar el cliente" });
+    next(error); // Pasamos el error al middleware global de manejo de errores
   }
 };
 

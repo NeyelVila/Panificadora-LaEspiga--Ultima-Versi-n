@@ -52,7 +52,7 @@ export const login = async (req, res) => {
     // 4. Redirigir al sistema una vez logueado
     res.redirect('/productos/view'); 
   } catch (error) {
-    res.status(500).send("Error al iniciar sesión: " + error.message);
+    next(error); // Pasamos el error al middleware global de manejo de errores
   }
 };
 

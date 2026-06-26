@@ -32,7 +32,7 @@ class PedidosController {
     const pedidos = await Pedido.find(filtro).sort({ fechaPedido: -1 });
     res.render('pedidos', { pedidos, estadoActual: estado, fechaActual: fecha });
   } catch (error) {
-    res.status(500).send("Error al cargar pedidos");
+    next(error); // Pasamos el error al middleware global de manejo de errores
   }
   };
 
@@ -41,7 +41,7 @@ class PedidosController {
       const nuevoPedido = await pedidosService.crear(req.body);
       res.status(201).json({ error: false, data: nuevoPedido, mensaje: "Pedido creado con éxito" });
     } catch (error) {
-      res.status(400).json({ error: true, mensaje: error.message });
+      next(error); // Pasamos el error al middleware global de manejo de errores
     }
   };
 
@@ -50,7 +50,7 @@ class PedidosController {
       const pedidoActualizado = await pedidosService.actualizarEstado(req.params.id, req.body.estado);
       res.status(200).json({ error: false, data: pedidoActualizado });
     } catch (error) {
-      res.status(400).json({ error: true, mensaje: error.message });
+      next(error); // Pasamos el error al middleware global de manejo de errores
     }
   };
   // Prepara los datos y muestra el formulario de creación
@@ -62,7 +62,7 @@ class PedidosController {
       
       res.render('pedidos_form', { clientes, productos });
     } catch (error) {
-      res.status(500).send("Error al cargar el formulario de pedidos");
+      next(error); // Pasamos el error al middleware global de manejo de errores
     }
   };
 
@@ -94,15 +94,7 @@ class PedidosController {
       
       res.redirect('/pedidos/view');
     } catch (error) {
-      // Aquí capturamos el mensaje de "Stock insuficiente"
-      res.status(400).send(`
-        <div style="font-family: sans-serif; text-align: center; padding: 50px;">
-          <h3 style="color: #dc3545;">⚠️ No se pudo crear el pedido</h3>
-          <p>${error.message}</p>
-          <br>
-          <a href="/pedidos/nuevo" class="btn btn-primary">Volver a intentar</a>
-        </div>
-      `);
+      next(error); // Pasamos el error al middleware global de manejo de errores
     }
   };
 
@@ -123,11 +115,7 @@ class PedidosController {
       const pedidos = await Pedido.find(filtro).sort({ fechaCreacion: -1 });
       res.render('pedidos', { pedidos, estadoActual: estado, fechaActual: fecha });
     } catch (error) {
-      res.status(400).send(`
-        <h3>Error al listar pedidos</h3>
-        <p>${error.message}</p>
-        <a href="/pedidos/view">Intentar de nuevo</a>
-      `);
+      next(error); // Pasamos el error al middleware global de manejo de errores
     }
   };
 
@@ -140,11 +128,7 @@ class PedidosController {
       await pedidosService.actualizarEstado(id, nuevoEstado);
       res.redirect('/pedidos/view');
     } catch (error) {
-      res.status(400).send(`
-        <h3>Error de Producción</h3>
-        <p>${error.message}</p>
-        <a href="/pedidos/view">Volver a Pedidos</a>
-      `);
+      next(error); // Pasamos el error al middleware global de manejo de errores
     }
   };
 
@@ -176,7 +160,7 @@ class PedidosController {
       // 4. Enviamos el pedido ya formateado a la plantilla de Pug
       res.render('pedido_detalle', { pedido: pedidoObj });
     } catch (error) {
-      res.status(500).send("Error al cargar el detalle del pedido: " + error.message);
+      next(error); // Pasamos el error al middleware global de manejo de errores
     }
   };
 
@@ -219,8 +203,7 @@ class PedidosController {
     await pedido.save();
     res.redirect('/pedidos/view');
   } catch (error) {
-    console.error("🔴 ERROR AL AVANZAR ESTADO:", error);
-    res.status(500).json({ error: "Error al avanzar el estado del pedido" });
+    next(error); // Pasamos el error al middleware global de manejo de errores
   }
 };
 
@@ -251,8 +234,7 @@ class PedidosController {
 
     res.redirect('/pedidos/view');
   } catch (error) {
-    console.error("🔴 ERROR REAL AL CANCELAR:", error);
-    res.status(500).json({ error: "Error al cancelar el pedido" });
+    next(error); // Pasamos el error al middleware global de manejo de errores
   }
  };
   asignarHorarioYDespachar = async (req, res) => {
@@ -267,7 +249,7 @@ class PedidosController {
 
     res.redirect('/pedidos/view');
   } catch (error) {
-    res.status(500).send("Error al asignar horario");
+    next(error); // Pasamos el error al middleware global de manejo de errores
   }
  };
 

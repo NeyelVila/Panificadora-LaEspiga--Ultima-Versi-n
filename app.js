@@ -4,6 +4,7 @@ import session from 'express-session';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import logger from './src/middleware/logger.middleware.js';
+import {errorHandler} from './src/middleware/errorHandler.middleware.js';
 import Cliente from './src/models/clientes.schema.js';
 import Pedido from './src/models/Pedido.js';
 import Insumo from './src/models/Insumo.js';
@@ -97,10 +98,7 @@ app.use((req, res) => {
 });
 
 // Manejador global de errores (500)
-app.use((err, req, res, next) => {
-  console.error(err.message);
-  res.status(500).json({ error: 'Error interno del servidor' });
-});
+app.use(errorHandler);
 
 // exporta con ES Modules
 export default app;

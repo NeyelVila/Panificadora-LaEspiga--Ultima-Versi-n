@@ -8,7 +8,7 @@ class InsumosController {
       const insumos = insumosService.obtenerTodos();
       res.status(200).json({ error: false, data: insumos });
     } catch (error) {
-      res.status(500).json({ error: true, mensaje: error.message });
+      next(error); // Pasamos el error al middleware global de manejo de errores
     }
   };
 
@@ -17,7 +17,7 @@ class InsumosController {
       const nuevoInsumo = insumosService.crear(req.body);
       res.status(201).json({ error: false, data: nuevoInsumo });
     } catch (error) {
-      res.status(400).json({ error: true, mensaje: error.message });
+      next(error); // Pasamos el error al middleware global de manejo de errores
     }
   };
 
@@ -26,7 +26,7 @@ class InsumosController {
       const insumo = insumosService.darDeBaja(req.params.id);
       res.status(200).json({ error: false, data: insumo, mensaje: "Insumo desactivado correctamente." });
     } catch (error) {
-      res.status(400).json({ error: true, mensaje: error.message });
+      next(error); // Pasamos el error al middleware global de manejo de errores
     }
   };
   listarParaWeb = async (req, res) => {
@@ -35,7 +35,7 @@ class InsumosController {
       const insumos = await insumosService.obtenerTodos();
       res.render('insumos', { insumos });
     } catch (error) {
-      res.status(500).send("Error al cargar la página de stock");
+      next(error); // Pasamos el error al middleware global de manejo de errores
     }
   };
   renderizarFormulario = (req, res) => {
@@ -48,7 +48,7 @@ class InsumosController {
       await insumosService.crear(req.body);
       res.redirect('/insumos/view');
     } catch (error) {
-      res.status(400).send("Error al crear insumo: " + error.message);
+      next(error); // Pasamos el error al middleware global de manejo de errores
     }
   };
 
@@ -60,7 +60,7 @@ class InsumosController {
       
       res.render('insumo_ingreso', { insumo });
     } catch (error) {
-      res.status(500).send("Error al cargar la página: " + error.message);
+      next(error); // Pasamos el error al middleware global de manejo de errores
     }
   };
 
@@ -76,7 +76,7 @@ class InsumosController {
 
       res.redirect('/insumos/view');
     } catch (error) {
-      res.status(400).send("Error al actualizar inventario: " + error.message);
+      next(error); // Pasamos el error al middleware global de manejo de errores
     }
   };
 }
