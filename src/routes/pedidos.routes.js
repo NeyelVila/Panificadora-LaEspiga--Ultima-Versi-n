@@ -7,26 +7,27 @@ const pedidosController = require('../controllers/pedidos.controller');
 // ES Modules
 import { Router } from 'express';
 import pedidosController from '../controllers/pedidos.controller.js';
+import { requerirAutenticacion, requerirAdmin } from '../middleware/auth.middleware.js';
 
 const router = Router();
 
 // ==========================================
 // 1. RUTAS WEB
 // ==========================================
-router.get('/view', pedidosController.listarParaWeb);
-router.get('/nuevo', pedidosController.renderizarFormulario);
-router.post('/crear-web', pedidosController.crearDesdeWeb);   
-router.get('/:id/detalle', pedidosController.verDetalleWeb);
-router.post('/estado-web/:id', pedidosController.cambiarEstadoWeb);
-router.post('/avanzar/:id', pedidosController.avanzarEstadoPedido);
-router.post('/cancelar/:id', pedidosController.cancelarPedido);
-router.post('/asignar-despacho/:id', pedidosController.asignarHorarioYDespachar);
+router.get('/view', requerirAutenticacion, pedidosController.listarParaWeb);
+router.get('/nuevo', requerirAutenticacion, pedidosController.renderizarFormulario);
+router.post('/crear-web', requerirAutenticacion, pedidosController.crearDesdeWeb);   
+router.get('/:id/detalle', requerirAutenticacion, pedidosController.verDetalleWeb);
+router.post('/estado-web/:id', requerirAutenticacion, pedidosController.cambiarEstadoWeb);
+router.post('/avanzar/:id', requerirAutenticacion, pedidosController.avanzarEstadoPedido);
+router.post('/cancelar/:id', requerirAutenticacion, pedidosController.cancelarPedido);
+router.post('/asignar-despacho/:id', requerirAutenticacion, pedidosController.asignarHorarioYDespachar);
 
 // ==========================================
 // 2. RUTAS API / THUNDER CLIENT
 // ==========================================
-router.get('/', pedidosController.obtenerTodos);
-router.post('/', pedidosController.crear);
+router.get('/', requerirAutenticacion, pedidosController.obtenerTodos);
+router.post('/', requerirAutenticacion, pedidosController.crear);
 
 export default router;
 // commonjs

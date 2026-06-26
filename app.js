@@ -1,5 +1,6 @@
 // ES Modules -> import 
 import express from 'express';
+import session from 'express-session';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import logger from './src/middleware/logger.middleware.js';
@@ -17,9 +18,19 @@ const __dirname = path.dirname(__filename);
 // ********* Middlewares ***************
 // le dice al servidor que entienda JSON en el body de las requests
 app.use(express.json());
-
 // formularios HTML
 app.use(express.urlencoded({ extended: true }));
+
+// Configurar sesión
+app.use(session({
+  secret: process.env.JWT_SECRET || 'clave_secreta_de_respaldo',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { 
+    secure: false, 
+    maxAge: 1000 * 60 * 60 * 2 // 2 horas
+  }
+}));
 
 // servir archivos estáticos desde la carpeta 'public'
 app.use(express.static(path.join(__dirname, 'public')));
@@ -66,7 +77,10 @@ import productosRoutes from './src/routes/productos.routes.js';
 import pedidosRoutes from './src/routes/pedidos.routes.js'; 
 import insumosRoutes from './src/routes/insumos.routes.js';
 import recetasRoutes from './src/routes/recetas.routes.js';
+import authRoutes from './src/routes/auth.routes.js';
 
+// Rutas de autenticación
+app.use('/auth', authRoutes);
 
 // USO DE RUTAS
 app.use('/facturacion', facturacionRoutes);

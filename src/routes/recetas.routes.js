@@ -3,11 +3,12 @@
 //const router = Router();
 import { Router } from 'express';
 import recetasController from '../controllers/recetas.controller.js';
+import { requerirAutenticacion, requerirAdmin } from '../middleware/auth.middleware.js';
 const router = Router();
 
-router.get('/', recetasController.obtenerTodas);
-router.get('/producto/:productoId', recetasController.obtenerPorProducto);
-router.post('/', recetasController.crear);
+router.get('/', requerirAutenticacion, recetasController.obtenerTodas);
+router.get('/producto/:productoId', requerirAutenticacion, recetasController.obtenerPorProducto);
+router.post('/', requerirAutenticacion, requerirAdmin, recetasController.crear);
 
 //module.exports = router;
 export default router;
