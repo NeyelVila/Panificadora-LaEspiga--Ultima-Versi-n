@@ -12,7 +12,7 @@ import Insumo from '../models/Insumo.js';
 
 class PedidosController {
   
-  obtenerTodos = async (req, res) => {
+  obtenerTodos = async (req, res, next) => {
    try {
     const { estado, fecha } = req.query;
     let filtro = {};
@@ -36,7 +36,7 @@ class PedidosController {
   }
   };
 
-  crear = async (req, res) => {
+  crear = async (req, res, next) => {
     try {
       const nuevoPedido = await pedidosService.crear(req.body);
       res.status(201).json({ error: false, data: nuevoPedido, mensaje: "Pedido creado con éxito" });
@@ -45,7 +45,7 @@ class PedidosController {
     }
   };
 
-  actualizarEstado = async (req, res) => {
+  actualizarEstado = async (req, res, next) => {
     try {
       const pedidoActualizado = await pedidosService.actualizarEstado(req.params.id, req.body.estado);
       res.status(200).json({ error: false, data: pedidoActualizado });
@@ -54,7 +54,7 @@ class PedidosController {
     }
   };
   // Prepara los datos y muestra el formulario de creación
-  renderizarFormulario = async (req, res) => {
+  renderizarFormulario = async (req, res, next) => {
     try {
       // Buscamos clientes activos y productos disponibles
       const clientes = await Cliente.find({ estado: 1 });
@@ -67,7 +67,7 @@ class PedidosController {
   };
 
   // Recibe los datos del navegador y crea el pedido
-  crearDesdeWeb = async (req, res) => {
+  crearDesdeWeb = async (req, res, next) => {
     try {
       const { clienteId, productosIds, cantidades } = req.body;
       
@@ -100,7 +100,7 @@ class PedidosController {
 
   
   // Lista todos los pedidos en la tabla
-  listarParaWeb = async (req, res) => {
+  listarParaWeb = async (req, res, next) => {
     try {
       const { estado, fecha } = req.query;
       let filtro = {};
@@ -120,7 +120,7 @@ class PedidosController {
   };
 
   // Cambia el estado (Ej: Pendiente a En Producción)
-  cambiarEstadoWeb = async (req, res) => {
+  cambiarEstadoWeb = async (req, res, next) => {
     try {
       const { id } = req.params;
       const { nuevoEstado } = req.body;
@@ -134,7 +134,7 @@ class PedidosController {
 
   // Busca un pedido por ID y muestra el desglose completo
  // Busca un pedido por ID y muestra el desglose completo
-  verDetalleWeb = async (req, res) => {
+  verDetalleWeb = async (req, res, next) => {
     try {
       // 1. Apuntamos a 'productos.productoId' tal como está en tu esquema
       const pedido = await Pedido.findById(req.params.id).populate('productos.productoId');
@@ -165,7 +165,7 @@ class PedidosController {
   };
 
   // Avanza el estado del pedido un paso hacia adelante de forma lineal
- avanzarEstadoPedido = async (req, res) => {
+ avanzarEstadoPedido = async (req, res, next) => {
   try {
     const { id } = req.params;
     const pedido = await Pedido.findById(id);
@@ -208,7 +208,7 @@ class PedidosController {
 };
 
 // Cancela un pedido (solo si no ha sido entregado aún)
-  cancelarPedido = async (req, res) => {
+  cancelarPedido = async (req, res, next) => {
   try {
     const { id } = req.params;
     const pedido = await Pedido.findById(id);
@@ -237,7 +237,7 @@ class PedidosController {
     next(error); // Pasamos el error al middleware global de manejo de errores
   }
  };
-  asignarHorarioYDespachar = async (req, res) => {
+  asignarHorarioYDespachar = async (req, res, next) => {
    try {
     const { id } = req.params;
     const { horario } = req.body; // Este dato vendrá de un formulario pequeño

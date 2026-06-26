@@ -4,7 +4,7 @@ import Producto from '../models/Producto.js'; // <-- ¡Esta es la línea que fal
 
 class FacturacionController {
   
-  listarPendientesCobro = async (req, res) => {
+  listarPendientesCobro = async (req, res, next) => {
     try {
       const pedidosPendientes = await Pedido.find({ 
         pagado: false, 
@@ -27,7 +27,7 @@ class FacturacionController {
     }
   };
 
-  cobrarEfectivo = async (req, res) => {
+  cobrarEfectivo = async (req, res, next) => {
     try {
       const { id } = req.params;
       const pedido = await Pedido.findById(id);

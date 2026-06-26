@@ -7,7 +7,7 @@ import Producto from '../models/Producto.js';
 import Insumo from '../models/Insumo.js';
 
 class ProductosController {
-  obtenerTodos = (req, res) => {
+  obtenerTodos = (req, res, next) => {
     try {
       const productos = productosService.obtenerTodos();
       res.status(200).json({ error: false, data: productos });
@@ -16,7 +16,7 @@ class ProductosController {
     }
   };
 
-    crear = async (req, res) => {
+    crear = async (req, res, next) => {
     try {
       // AQUÍ ESTÁ LA CLAVE: Hay que pasarle el req.body al servicio
       const nuevoProducto = await productosService.crear(req.body); 
@@ -26,7 +26,7 @@ class ProductosController {
     }
   };
 
-  darDeBaja = (req, res) => {
+  darDeBaja = (req, res, next) => {
     try {
       const producto = productosService.darDeBaja(req.params.id);
       res.status(200).json({ error: false, data: producto, mensaje: "Producto desactivado correctamente." });
@@ -34,7 +34,7 @@ class ProductosController {
       next(error); // Pasamos el error al middleware global de manejo de errores
     }
   };
-   listarParaWeb = async (req, res) => {
+   listarParaWeb = async (req, res, next) => {
     try {
       // ¿Estás seguro que 'productosService.obtenerTodos()' trae el modelo Mongoose?
       // Si el servicio hace un .lean(), a veces los campos nuevos no se ven si no se actualizaron.
@@ -45,7 +45,7 @@ class ProductosController {
     }
   };
   // Muestra la pantalla del formulario
-   renderizarFormulario = async (req, res) => {
+   renderizarFormulario = async (req, res, next) => {
     try {
      // Buscamos todos los insumos activos para llenar los selectores del formulario
      const insumos = await Insumo.find({ activo: true });
@@ -56,7 +56,7 @@ class ProductosController {
    };
 
   // Recibe los datos del form HTML, crea el producto y redirecciona
-  crearDesdeWeb = async (req, res) => {
+  crearDesdeWeb = async (req, res, next) => {
   try {
     const { nombre, categoria, precio, insumos, cantidades } = req.body;
 
@@ -90,7 +90,7 @@ class ProductosController {
 };
 
   // Ejecuta la baja lógica y recarga la tabla
- bajaDesdeWeb = async (req, res) => {
+ bajaDesdeWeb = async (req, res, next) => {
     try {
       const { id } = req.params;
       
@@ -109,7 +109,7 @@ class ProductosController {
   };
 
   // Busca la receta y muestra la vista
-  verRecetaWeb = async (req, res) => {
+  verRecetaWeb = async (req, res, next) => {
     try {
       const producto = await Producto.findById(req.params.id);
       // Usamos populate para traer los nombres de los insumos
@@ -121,7 +121,7 @@ class ProductosController {
     }
   };
   // Muestra el formulario para adjudicar una receta a un producto existente
-  renderizarNuevaReceta = async (req, res) => {
+  renderizarNuevaReceta = async (req, res, next) => {
     try {
       const producto = await Producto.findById(req.params.id);
       const insumos = await Insumo.find({ activo: true });
@@ -135,7 +135,7 @@ class ProductosController {
   };
 
   // Recibe los datos y guarda la receta en la base de datos
-  crearRecetaParaProductoWeb = async (req, res) => {
+  crearRecetaParaProductoWeb = async (req, res, next) => {
     try {
       const { insumos, cantidades } = req.body;
       const productoId = req.params.id;
@@ -169,7 +169,7 @@ class ProductosController {
     }
   };
   // Muestra la pantalla con los datos cargados
-  renderizarEdicionWeb = async (req, res) => {
+  renderizarEdicionWeb = async (req, res, next) => {
     try {
       const { id } = req.params;
       const producto = await Producto.findById(id); 
@@ -185,7 +185,7 @@ class ProductosController {
   };
 
   // Atrapa los datos nuevos y los guarda
-  actualizarDesdeWeb = async (req, res) => {
+  actualizarDesdeWeb = async (req, res, next) => {
     try {
       const { id } = req.params;
       const { nombre, precio } = req.body; 

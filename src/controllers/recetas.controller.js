@@ -2,7 +2,7 @@
 import recetasService from '../services/recetas.service.js';
 
 class RecetasController {
-  obtenerTodas = (req, res) => {
+  obtenerTodas = (req, res, next) => {
     try {
       const recetas = recetasService.obtenerTodas();
       res.status(200).json({ error: false, data: recetas });
@@ -11,7 +11,7 @@ class RecetasController {
     }
   };
 
-  obtenerPorProducto = (req, res) => {
+  obtenerPorProducto = (req, res, next) => {
     try {
       const receta = recetasService.obtenerPorProducto(req.params.productoId);
       if (!receta) return res.status(404).json({ error: true, mensaje: "Receta no encontrada" });
@@ -21,7 +21,7 @@ class RecetasController {
     }
   };
 
-  crear = (req, res) => {
+  crear = (req, res, next) => {
     try {
       const nuevaReceta = recetasService.crear(req.body);
       res.status(201).json({ error: false, data: nuevaReceta });

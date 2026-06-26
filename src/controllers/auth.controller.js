@@ -1,16 +1,14 @@
 import Usuario from '../models/Usuario.js';
 import bcrypt from 'bcrypt';
 
-// Función para registrar un nuevo usuario
-export const registrar = async (req, res) => {
+// CAMBIO 1: Añadimos 'next' a los parámetros de todas las funciones
+export const registrar = async (req, res, next) => {
   try {
     const { nombre, email, password, rol } = req.body;
 
-    // 1. Encriptar la contraseña (hash)
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // 2. Crear y guardar el usuario
     const nuevoUsuario = new Usuario({
       nombre,
       email,
@@ -21,44 +19,46 @@ export const registrar = async (req, res) => {
     await nuevoUsuario.save();
     res.status(201).send("Usuario registrado con éxito. Ya puedes iniciar sesión.");
   } catch (error) {
-    res.status(500).send("Error al registrar: " + error.message);
+    // CAMBIO 2: Usamos next(error) en lugar de res.status().send()
+    // Esto hace que el error pase por tu middleware centralizado
+    next(error); 
   }
 };
 
-// Función para iniciar sesión
-export const login = async (req, res) => {
+export const login = async (req, res, next) => { // CAMBIO 1: Añadido 'next'
   try {
     const { email, password } = req.body;
 
-    // 1. Buscar si el usuario existe
     const usuario = await Usuario.findOne({ email });
     if (!usuario) {
-      return res.status(404).send("Usuario no encontrado");
+      // Opcional: Puedes asignar un status al error para que el middleware lo sepa
+      const error = new Error("Usuario no encontrado");
+      error.status = 404;
+      return next(error);
     }
 
-    // 2. Comparar la contraseña ingresada con la encriptada en la BD
     const validPassword = await bcrypt.compare(password, usuario.password);
     if (!validPassword) {
-      return res.status(401).send("Contraseña incorrecta");
+      const error = new Error("Contraseña incorrecta");
+      error.status = 401;
+      return next(error);
     }
 
-    // 3. Crear la sesión del usuario
     req.session.usuario = {
       id: usuario._id,
       nombre: usuario.nombre,
       rol: usuario.rol
     };
 
-    // 4. Redirigir al sistema una vez logueado
     res.redirect('/productos/view'); 
   } catch (error) {
-    next(error); // Pasamos el error al middleware global de manejo de errores
+    next(error); 
   }
 };
 
-// Función para cerrar sesión
-export const logout = (req, res) => {
-  req.session.destroy(() => {
-    res.redirect('/auth/login'); // Te lleva a la vista de login (que crearemos luego)
+export const logout = (req, res, next) => { // CAMBIO 1: Añadido 'next'
+  req.session.destroy((err) => {
+    if (err) return next(err); // CAMBIO 3: Manejo de error al destruir sesión
+    res.redirect('/auth/login');
   });
 };

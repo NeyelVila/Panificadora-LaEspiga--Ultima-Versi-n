@@ -23,7 +23,7 @@ const getNuevoCliente = (req, res) => {
   res.render('clientes_form');
 };
 
-const getClienteEditar = async (req, res) => {
+const getClienteEditar = async (req, res, next) => {
   try {
     const id = req.params.id;
     const cliente = await getClientesActivosPorId(id);
@@ -40,7 +40,7 @@ const getClienteEditar = async (req, res) => {
   }
 };
 
-const postCliente = async (req, res) => {
+const postCliente = async (req, res, next) => {
   try {
     const { 
       nombre, 
@@ -69,7 +69,7 @@ const postCliente = async (req, res) => {
   }
 };
 
-const deleteCliente = async(req, res) => {
+const deleteCliente = async(req, res, next) => {
   try {
     // agarra la id del cliente a eliminar desde los parámetros de la URL
     const id = req.params.id;
@@ -81,7 +81,7 @@ const deleteCliente = async(req, res) => {
   }
 };
 
-const putCliente = async(req, res) => {
+const putCliente = async(req, res, next) => {
   try {
     const id = req.params.id;
 
