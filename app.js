@@ -9,6 +9,10 @@ import Cliente from './src/models/clientes.schema.js';
 import Pedido from './src/models/Pedido.js';
 import Insumo from './src/models/Insumo.js';
 import {requerirAutenticacion} from './src/middleware/auth.middleware.js';
+import { conectarDB } from './src/config/db.js';
+
+// Conectar a la base de datos
+await conectarDB();
 
 
 const app = express();
