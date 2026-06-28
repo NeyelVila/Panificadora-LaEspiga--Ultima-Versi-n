@@ -7,9 +7,9 @@ import Producto from '../models/Producto.js';
 import Insumo from '../models/Insumo.js';
 
 class ProductosController {
-  obtenerTodos = (req, res, next) => {
+  obtenerTodos = async (req, res, next) => {
     try {
-      const productos = productosService.obtenerTodos();
+      const productos = await productosService.obtenerTodos();
       res.status(200).json({ error: false, data: productos });
     } catch (error) {
       next(error); // Pasamos el error al middleware global de manejo de errores
@@ -26,9 +26,9 @@ class ProductosController {
     }
   };
 
-  darDeBaja = (req, res, next) => {
+  darDeBaja = async (req, res, next) => {
     try {
-      const producto = productosService.darDeBaja(req.params.id);
+      const producto = await productosService.darDeBaja(req.params.id);
       res.status(200).json({ error: false, data: producto, mensaje: "Producto desactivado correctamente." });
     } catch (error) {
       next(error); // Pasamos el error al middleware global de manejo de errores

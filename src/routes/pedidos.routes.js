@@ -28,6 +28,7 @@ router.post('/asignar-despacho/:id', requerirAutenticacion, pedidosController.as
 // ==========================================
 router.get('/', requerirAutenticacion, pedidosController.obtenerTodos);
 router.post('/', requerirAutenticacion, pedidosController.crear);
+router.patch('/:id/estado', requerirAutenticacion, pedidosController.actualizarEstado);
 
 export default router;
 // commonjs

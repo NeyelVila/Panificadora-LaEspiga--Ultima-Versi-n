@@ -62,7 +62,7 @@ const postCliente = async (req, res, next) => {
       .send("Faltan datos");
     }
     await crearCliente(req.body);
-    res.redirect('/clientes/view');
+    res.redirect('/clientes');
 
   } catch (error) {
     next(error); // Pasamos el error al middleware global de manejo de errores

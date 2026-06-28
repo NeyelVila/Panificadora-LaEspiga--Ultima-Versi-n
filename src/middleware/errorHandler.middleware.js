@@ -7,6 +7,16 @@ export const errorHandler = (err, req, res, next) => {
   const statusCode = err.status || 500;
   const mensaje = err.message || 'Ocurrió un error interno en el servidor';
 
+  const wantsJson =
+    req.path.startsWith('/productos') ||
+    req.path.startsWith('/pedidos') ||
+    req.path.includes('/eliminar') ||
+    req.accepts('json') === 'json';
+
+  if (wantsJson) {
+    return res.status(statusCode).json({ error: true, mensaje });
+  }
+
   // 3. Enviamos la respuesta al cliente
   // Como estás usando Pug, lo ideal sería renderizar una vista de error. 
   // Si no tienes una, podemos enviar un mensaje simple de texto por ahora.

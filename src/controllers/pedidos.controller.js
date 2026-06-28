@@ -14,23 +14,8 @@ class PedidosController {
   
   obtenerTodos = async (req, res, next) => {
    try {
-    const { estado, fecha } = req.query;
-    let filtro = {};
-
-    // Filtro por estado
-    if (estado) filtro.estado = estado;
-
-    // Filtro por fecha (buscando pedidos del día seleccionado)
-    if (fecha) {
-      const inicio = new Date(fecha);
-      inicio.setHours(0,0,0,0);
-      const fin = new Date(fecha);
-      fin.setHours(23,59,59,999);
-      filtro.fechaPedido = { $gte: inicio, $lte: fin };
-    }
-
-    const pedidos = await Pedido.find(filtro).sort({ fechaPedido: -1 });
-    res.render('pedidos', { pedidos, estadoActual: estado, fechaActual: fecha });
+    const pedidos = await pedidosService.obtenerTodos();
+    res.status(200).json({ error: false, data: pedidos });
   } catch (error) {
     next(error); // Pasamos el error al middleware global de manejo de errores
   }

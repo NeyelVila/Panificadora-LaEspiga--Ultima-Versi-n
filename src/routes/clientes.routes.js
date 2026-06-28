@@ -14,19 +14,23 @@ import { requerirAutenticacion, requerirAdmin } from '../middleware/auth.middlew
 
 const router = express.Router();
 
-// LISTAR (Cambiamos '/' por '/view' para que coincida con la URL)
+// LISTAR
+router.get('/', requerirAutenticacion, getClientes);
 router.get('/view', requerirAutenticacion, getClientes);
 
 // FORM CREAR
 router.get('/nuevo', requerirAutenticacion, getNuevoCliente);
 
-// CREAR CLIENTE (Cambiamos '/' por '/crear' para que coincida con action="/clientes/crear")
+// CREAR CLIENTE
+router.post('/', requerirAutenticacion, postCliente);
 router.post('/crear', requerirAutenticacion, postCliente);
 
-// ELIMINAR (Invertimos el orden a '/eliminar/:id' para coincidir con el form)
+// ELIMINAR
+router.post('/:id/eliminar', requerirAutenticacion, deleteCliente);
 router.post('/eliminar/:id', requerirAutenticacion, deleteCliente);
 
-// FORM EDITAR (Invertimos a '/editar/:id')
+// FORM EDITAR
+router.get('/:id/editar', requerirAutenticacion, getClienteEditar);
 router.get('/editar/:id', requerirAutenticacion, getClienteEditar);
 
 // ACTUALIZAR (Cambiamos a '/actualizar/:id' para que coincida con el action)
