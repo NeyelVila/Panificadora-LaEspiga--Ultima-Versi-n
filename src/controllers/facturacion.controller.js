@@ -1,7 +1,7 @@
 import Pedido from '../models/Pedido.js';
 import Facturacion from '../models/Facturacion.js';
-import Producto from '../models/Producto.js'; // <-- ¡Esta es la línea que faltaba!
-
+import Producto from '../models/Producto.js';
+import FacturacionService from '../services/facturacion.service.js';
 class FacturacionController {
   
   listarPendientesCobro = async (req, res, next) => {
@@ -60,6 +60,19 @@ class FacturacionController {
       res.redirect('/facturacion/view');
     } catch (error) {
       next(error); // Pasamos el error al middleware global de manejo de errores
+    }
+  };
+  
+  verReporteFranquicias = async (req, res, next) => {
+    try {
+      // 1. Llamamos al servicio para generar el reporte de franquicias
+      const reporte = await FacturacionService.generarReporteFranquicias();
+      
+      // 2. Respondemos. Por ahora podriamos devolver un JSON para probar que funciona.
+      // Más adelante podriamos cambiar esto por un res.render('reporte_franquicias', { reporte });
+      res.status(200).json({ error: false, data: reporte });
+    } catch (error) {
+      next(error); 
     }
   };
 }

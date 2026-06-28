@@ -31,7 +31,6 @@ class InsumosController {
   };
   listarParaWeb = async (req, res, next) => {
     try {
-      // Obtenemos todos los insumos usando tu servicio actual
       const insumos = await insumosService.obtenerTodos();
       res.render('insumos', { insumos });
     } catch (error) {

@@ -4,7 +4,6 @@ import { requerirAutenticacion, requerirAdmin } from '../middleware/auth.middlew
 
 const router = Router();
 
-// ¡Le agregamos el /view aquí!
 router.get('/view', requerirAutenticacion, facturacionController.listarPendientesCobro); 
 router.post('/cobrar/:id', requerirAutenticacion, facturacionController.cobrarEfectivo);
 

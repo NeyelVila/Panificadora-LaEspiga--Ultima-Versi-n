@@ -74,7 +74,6 @@ class PedidosController {
       // Armamos el array de items tal cual lo espera tu servicio
       const items = [];
       if (productosIds && productosIds.length > 0) {
-        // En caso de que sea un solo producto, Express lo manda como string, no como array.
         // Lo convertimos a array para iterar siempre seguro.
         const ids = Array.isArray(productosIds) ? productosIds : [productosIds];
         const cants = Array.isArray(cantidades) ? cantidades : [cantidades];
@@ -89,7 +88,6 @@ class PedidosController {
         }
       }
 
-      // Llamamos a tu servicio existente (que ya calcula precios totales)
       await pedidosService.crear({ clienteId, items });
       
       res.redirect('/pedidos/view');
@@ -132,8 +130,7 @@ class PedidosController {
     }
   };
 
-  // Busca un pedido por ID y muestra el desglose completo
- // Busca un pedido por ID y muestra el desglose completo
+
   verDetalleWeb = async (req, res, next) => {
     try {
       // 1. Apuntamos a 'productos.productoId' tal como está en tu esquema
@@ -164,7 +161,6 @@ class PedidosController {
     }
   };
 
-  // Avanza el estado del pedido un paso hacia adelante de forma lineal
  avanzarEstadoPedido = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -178,9 +174,6 @@ class PedidosController {
     if (receta) {
       for (const ing of receta.ingredientes) {
         const cant = ing.cantidad * item.cantidad;
-        // Usamos { $inc: { stockActual: -cant } } pero MongoDB 
-        // mantendrá el stock donde esté. Si quieres mayor control, 
-        // verifica antes de descontar.
         await Insumo.findByIdAndUpdate(ing.insumoId, { $inc: { stockActual: -cant } });
       }
     }
@@ -218,7 +211,6 @@ class PedidosController {
       return res.status(400).send("No se puede cancelar un pedido ya entregado");
     }
 
-    // ¡NUEVA LÓGICA: DETECTAR SI YA SE HABÍA PRODUCIDO!
     // Si se cancela estando 'En Producción' o 'Despachado', el producto físico ya existe.
     // Lo sumamos al stock excedente de la panadería.
     if (pedido.estado === 'En Producción' || pedido.estado === 'Despachado') {
