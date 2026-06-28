@@ -18,7 +18,6 @@ class ProductosController {
 
     crear = async (req, res, next) => {
     try {
-      // AQUÍ ESTÁ LA CLAVE: Hay que pasarle el req.body al servicio
       const nuevoProducto = await productosService.crear(req.body); 
       res.status(201).json({ error: false, data: nuevoProducto });
     } catch (error) {
@@ -36,8 +35,6 @@ class ProductosController {
   };
    listarParaWeb = async (req, res, next) => {
     try {
-      // ¿Estás seguro que 'productosService.obtenerTodos()' trae el modelo Mongoose?
-      // Si el servicio hace un .lean(), a veces los campos nuevos no se ven si no se actualizaron.
       const productos = await Producto.find().lean(); 
       res.render('productos', { productos }); 
     } catch (error) {
@@ -47,7 +44,6 @@ class ProductosController {
   // Muestra la pantalla del formulario
    renderizarFormulario = async (req, res, next) => {
     try {
-     // Buscamos todos los insumos activos para llenar los selectores del formulario
      const insumos = await Insumo.find({ activo: true });
      res.render('productos_form', { insumos });
     } catch (error) {
@@ -101,7 +97,6 @@ class ProductosController {
         return res.status(404).send("Producto no encontrado para eliminar");
       }
 
-      // Redirigimos a la ruta donde vive la tabla de productos
       res.redirect('/productos/view'); 
     } catch (error) {
       next(error); // Pasamos el error al middleware global de manejo de errores
@@ -154,7 +149,6 @@ class ProductosController {
             });
           }
         }
-
         // Creamos la receta vinculada a este producto
         await Receta.create({
           productoId: productoId,

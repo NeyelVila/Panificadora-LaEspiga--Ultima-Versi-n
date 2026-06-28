@@ -3,7 +3,7 @@ export const errorHandler = (err, req, res, next) => {
   // 1. Registramos el error en la consola del servidor (ideal para que lo veas tú)
   console.error(`🔴 ERROR [${req.method} ${req.url}]:`, err.message);
   
-  // 2. Definimos el código de estado (500 por defecto si no viene uno específico)
+  // 2. Definimos el código de estado (500 por defecto)
   const statusCode = err.status || 500;
   const mensaje = err.message || 'Ocurrió un error interno en el servidor';
 
@@ -18,8 +18,6 @@ export const errorHandler = (err, req, res, next) => {
   }
 
   // 3. Enviamos la respuesta al cliente
-  // Como estás usando Pug, lo ideal sería renderizar una vista de error. 
-  // Si no tienes una, podemos enviar un mensaje simple de texto por ahora.
   res.status(statusCode).send(`
     <html>
       <body style="font-family: sans-serif; text-align: center; padding: 50px;">
@@ -31,3 +29,7 @@ export const errorHandler = (err, req, res, next) => {
     </html>
   `);
 };
+<<<<<<< HEAD
+=======
+  // Proxima implementación: renderizar una vista de error con EJS o Pug.
+>>>>>>> 8f97924f90d63604ec7cbebbf41436db7df6fcfa

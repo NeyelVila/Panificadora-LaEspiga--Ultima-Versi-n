@@ -1,4 +1,4 @@
-import Cliente from '../models/clientes.schema.js'; // <-- Ajusta el nombre de tu archivo de modelo de cliente si es distinto
+import Cliente from '../models/clientes.schema.js';
 import Pedido from '../models/Pedido.js';
 
 class FacturacionService {
@@ -31,3 +31,4 @@ class FacturacionService {
 }
 
 export default new FacturacionService();
+//aun no implementado para la entrega final

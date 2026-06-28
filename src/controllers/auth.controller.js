@@ -1,7 +1,6 @@
 import Usuario from '../models/Usuario.js';
 import bcrypt from 'bcrypt';
 
-// CAMBIO 1: Añadimos 'next' a los parámetros de todas las funciones
 export const registrar = async (req, res, next) => {
   try {
     const { nombre, email, password, rol } = req.body;
@@ -19,19 +18,17 @@ export const registrar = async (req, res, next) => {
     await nuevoUsuario.save();
     res.status(201).send("Usuario registrado con éxito. Ya puedes iniciar sesión.");
   } catch (error) {
-    // CAMBIO 2: Usamos next(error) en lugar de res.status().send()
-    // Esto hace que el error pase por tu middleware centralizado
+    // Esto hace que el error pase por el middleware centralizado
     next(error); 
   }
 };
 
-export const login = async (req, res, next) => { // CAMBIO 1: Añadido 'next'
+export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
     const usuario = await Usuario.findOne({ email });
     if (!usuario) {
-      // Opcional: Puedes asignar un status al error para que el middleware lo sepa
       const error = new Error("Usuario no encontrado");
       error.status = 404;
       return next(error);
@@ -50,15 +47,15 @@ export const login = async (req, res, next) => { // CAMBIO 1: Añadido 'next'
       rol: usuario.rol
     };
 
-    res.redirect('/productos/view'); 
+    res.redirect('/'); 
   } catch (error) {
     next(error); 
   }
 };
 
-export const logout = (req, res, next) => { // CAMBIO 1: Añadido 'next'
+export const logout = (req, res, next) => {
   req.session.destroy((err) => {
-    if (err) return next(err); // CAMBIO 3: Manejo de error al destruir sesión
+    if (err) return next(err);
     res.redirect('/auth/login');
   });
 };
