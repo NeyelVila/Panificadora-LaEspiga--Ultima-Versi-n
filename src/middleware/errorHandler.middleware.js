@@ -29,7 +29,4 @@ export const errorHandler = (err, req, res, next) => {
     </html>
   `);
 };
-<<<<<<< HEAD
-=======
   // Proxima implementación: renderizar una vista de error con EJS o Pug.
->>>>>>> 8f97924f90d63604ec7cbebbf41436db7df6fcfa
